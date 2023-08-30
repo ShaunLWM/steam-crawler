@@ -1,5 +1,4 @@
 import { Document, Model, model, Schema } from "mongoose";
-import { SteamProfile } from "../types";
 
 const TYPE_ENUM = ["add", "updated"];
 
@@ -10,17 +9,21 @@ export interface ILog {
 const ProfileSchemaFields: Record<keyof ILog, any> = {
   type: {
     type: String,
-    enum: TYPE_ENUM
+    enum: TYPE_ENUM,
   },
 };
 
-const ProfileSchema = new Schema<IProfileDocument, IProfileModel>(ProfileSchemaFields, { timestamps: true });
+const ProfileSchema = new Schema<IProfileDocument, IProfileModel>(
+  ProfileSchemaFields,
+  { timestamps: true },
+);
 
-export interface IProfileDocument extends ILog, Document { }
+export interface IProfileDocument extends ILog, Document {}
 
-ProfileSchema.statics.getUniqueLicensePlatesCount = async function (): Promise<number> {
-  return await this.distinct("address").count().exec();
-};
+ProfileSchema.statics.getUniqueLicensePlatesCount =
+  async function (): Promise<number> {
+    return await this.distinct("address").count().exec();
+  };
 
 export interface IProfileModel extends Model<IProfileDocument> {
   getUniqueLicensePlatesCount(): Promise<number>;

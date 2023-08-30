@@ -1,24 +1,36 @@
 import { Document, Model, model, Schema } from "mongoose";
-import { SteamProfile } from "../types";
 
-export interface IProfile extends Pick<SteamProfile, "steamid"> {
+export interface IProfile {
+  steamId: string;
+  name: string;
+  img: string;
 }
 
 const ProfileSchemaFields: Record<keyof IProfile, any> = {
-  steamid: {
+  steamId: {
     type: String,
     required: true,
     index: true,
   },
+  name: {
+    type: String,
+  },
+  img: {
+    type: String,
+  },
 };
 
-const ProfileSchema = new Schema<IProfileDocument, IProfileModel>(ProfileSchemaFields, { timestamps: true });
+const ProfileSchema = new Schema<IProfileDocument, IProfileModel>(
+  ProfileSchemaFields,
+  { timestamps: true },
+);
 
-export interface IProfileDocument extends IProfile, Document { }
+export interface IProfileDocument extends IProfile, Document {}
 
-ProfileSchema.statics.getUniqueLicensePlatesCount = async function (): Promise<number> {
-  return await this.distinct("address").count().exec();
-};
+ProfileSchema.statics.getUniqueLicensePlatesCount =
+  async function (): Promise<number> {
+    return await this.distinct("address").count().exec();
+  };
 
 export interface IProfileModel extends Model<IProfileDocument> {
   getUniqueLicensePlatesCount(): Promise<number>;
